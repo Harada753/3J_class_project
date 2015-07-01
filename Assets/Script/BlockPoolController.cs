@@ -72,11 +72,10 @@ public class BlockPoolController : MonoBehaviour {
 	private void MergeBlock(GameObject block) {
 		block.tag = "BlockPool";
 		block.name = "Cube";
-		block.transform.parent = poolCubes.transform;
+		block.transform.parent = poolCubes.transform; // merge
 
 		Rigidbody blockRigit = block.GetComponent<Rigidbody>();
 		blockRigit.useGravity = true;
-		blockRigit.velocity = new Vector3(0, 0, 0);
 
 		var blockCubes = new ArrayList();
 		foreach (Transform cube in block.transform) {
@@ -87,6 +86,7 @@ public class BlockPoolController : MonoBehaviour {
 			// move block cubes into poolCubes
 			cube.transform.parent = poolCubes.transform;
 
+			// add rigitbody
 			cube.gameObject.AddComponent<Rigidbody>();
 			Rigidbody cubeRigit = cube.gameObject.GetComponent<Rigidbody>();
 			// add gravity
