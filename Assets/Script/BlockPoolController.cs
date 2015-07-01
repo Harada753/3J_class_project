@@ -68,14 +68,15 @@ public class BlockPoolController : MonoBehaviour {
 		}
 	}
 
-	// merge to child
+	// merge block cubes in BlockPool/Cubes
 	private void MergeBlock(GameObject block) {
-		// move block cubes into poolCubes
 		block.tag = "BlockPool";
 		block.name = "Cube";
 		block.transform.parent = poolCubes.transform;
 
-		block.GetComponent<Rigidbody>().useGravity = false;
+		Rigidbody blockRigit = block.GetComponent<Rigidbody>();
+		blockRigit.useGravity = true;
+		blockRigit.velocity = new Vector3(0, 0, 0);
 
 		var blockCubes = new ArrayList();
 		foreach (Transform cube in block.transform) {
@@ -83,7 +84,19 @@ public class BlockPoolController : MonoBehaviour {
 		}
 		foreach (Transform cube in blockCubes) {
 			cube.tag = "BlockPool";
+			// move block cubes into poolCubes
 			cube.transform.parent = poolCubes.transform;
+
+			cube.gameObject.AddComponent<Rigidbody>();
+			Rigidbody cubeRigit = cube.gameObject.GetComponent<Rigidbody>();
+			// add gravity
+			cubeRigit.useGravity = true;
+			// cube can vary only y position
+			cubeRigit.constraints = (
+				RigidbodyConstraints.FreezePositionX | 
+				RigidbodyConstraints.FreezePositionZ | 
+				RigidbodyConstraints.FreezeRotation
+			);
 		}
 	}
 
@@ -97,7 +110,9 @@ public class BlockPoolController : MonoBehaviour {
 		offset.y = -ground.transform.position.y;
 
 		foreach (Transform cube in poolCubes.transform) {
-			SetCubePos(cube, offset);
+			if (cube.name.CompareTo("Cube") == 0) {
+				SetCubePos(cube, offset);
+			}
 		}
 	}
 
